@@ -127,7 +127,7 @@ function showCharacter(character, species, homeworld,films, starships,vehicles) 
         const starshipsText = document.createElement('p');
         starshipsText.textContent = 'Starships:';
         additionalInfoContainer.appendChild(starshipsText);
-
+        
         const starshipsList = document.createElement('ul');
         starships.forEach(starship => {
             const listItem = document.createElement('li');
@@ -207,31 +207,31 @@ async function fetchCharacters(url) {
     }
 }
 
-// Obtener el elemento de entrada de búsqueda
-const inputBusqueda = document.getElementById('search');
+const inputSearch = document.getElementById('search');
 
-// Asociar la función buscarPersonaje al evento input del campo de búsqueda
-inputBusqueda.addEventListener('input', buscarPersonaje);
+inputSearch.addEventListener('input', searchCharacter);
 
-// Definir la función buscarPersonaje
-function buscarPersonaje() {
-    const valorBusqueda = inputBusqueda.value.trim().toLowerCase();
-    const tarjetas = document.querySelectorAll('.card');
+function searchCharacter() {
+    const searchValue = inputSearch.value.trim().toLowerCase();
+    const cards = document.querySelectorAll('.card');
 
-    tarjetas.forEach(tarjeta => {
-        const nombreElemento = tarjeta.querySelector('.card-basic-info h5');
-        if (nombreElemento) {
-            const nombrePersonaje = nombreElemento.textContent.trim().toLowerCase();
-            if (nombrePersonaje.includes(valorBusqueda)) {
-                tarjeta.style.display = ''; // Mostrar tarjeta si coincide con la búsqueda
+    cards.forEach(card => {
+        const elementName = card.querySelector('.card-basic-info h5');
+        const elementHomeworld = card.querySelector('.card-basic-info p');
+        const elementFilms = card.dataset.films.split(',').map(film => film.trim().toLowerCase());
+        if (elementName && elementHomeworld && elementFilms) {
+            const characterName = elementName.textContent.trim().toLowerCase();
+            const characterHomeworld = elementHomeworld.textContent.trim().toLowerCase();
+            if (characterName.includes(searchValue) || characterHomeworld.includes(searchValue) || 
+            elementFilms.some(film => film.includes(searchValue))) {
+                card.style.display = ''; 
             } else {
-                tarjeta.style.display = 'none'; // Ocultar tarjeta si no coincide con la búsqueda
+                card.style.display = 'none'; 
             }
         }
     });
 }
 
-// Llamada a la función para cada página de la API
 for (let i = 1; i <= 9; i++) {
     fetchCharacters(`https://swapi.py4e.com/api/people/?page=${i}`);
 }
